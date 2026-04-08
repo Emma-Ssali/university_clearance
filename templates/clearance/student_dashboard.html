@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .status-pending { color: orange; }
+        .status-approved { color: green; }
+        .status-rejected { color: red; }
+    </style>
+</head>
+<body>
+
+<h1>🎓 Student Dashboard</h1>
+
+<div class="card">
+    <h2>Your Clearance Requests</h2>
+
+    {% for req in requests %}
+        <p>
+            <strong>ID:</strong> {{ req.id }} |
+            <strong>Status:</strong>
+            <span class="status-{{ req.status|lower }}">
+                {{ req.status }}
+            </span>
+        </p>
+    {% empty %}
+        <p>No requests yet.</p>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h2>Department Approvals</h2>
+
+    {% for app in approvals %}
+        <p>
+            <strong>{{ app.department.name }}</strong> →
+            <span class="status-{{ app.approval_status|lower }}">
+                {{ app.approval_status }}
+            </span>
+        </p>
+    {% empty %}
+        <p>No approvals yet.</p>
+    {% endfor %}
+    <a href="/clearance/request/create/">
+        <button>Create Clearance Request</button>
+    </a>
+</div>
+
+</body>
+</html>
