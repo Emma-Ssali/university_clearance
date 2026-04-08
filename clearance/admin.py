@@ -1,14 +1,19 @@
 from django.contrib import admin
 from .models import ClearanceRequest, ClearanceApproval
-
+from departments.models import Department
 
 class ClearanceApprovalInline(admin.TabularInline):
     model = ClearanceApproval
     extra = 1
 
 class ClearanceRequestAdmin(admin.ModelAdmin):
-    list_display = ('student', 'date_submitted', 'status')
-    inlines = [ClearanceApprovalInline]
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        for department in Department.objects.all():
+            ClearanceApproval.objects.get_or_create(
+                request=obj,
+                department=department
+            )
 
 class ClearanceApprovalAdmin(admin.ModelAdmin):
     def get_queryset(self, request):

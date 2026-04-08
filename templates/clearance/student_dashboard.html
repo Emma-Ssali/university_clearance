@@ -28,15 +28,8 @@
 
 <div class="card">
     <h2>Your Clearance Requests</h2>
-
-    {% for req in requests %}
-        <p>
-            <strong>ID:</strong> {{ req.id }} |
-            <strong>Status:</strong>
-            <span class="status-{{ req.status|lower }}">
-                {{ req.status }}
-            </span>
-        </p>
+    {% for req in clearance_requests %}
+        <p>ID: {{ req.id }} | Status: {{ req.status }}</p>
     {% empty %}
         <p>No requests yet.</p>
     {% endfor %}
@@ -44,14 +37,8 @@
 
 <div class="card">
     <h2>Department Approvals</h2>
-
-    {% for app in approvals %}
-        <p>
-            <strong>{{ app.department.name }}</strong> →
-            <span class="status-{{ app.approval_status|lower }}">
-                {{ app.approval_status }}
-            </span>
-        </p>
+    {% for approval in approvals %}
+        <p>{{ approval.department }} → {{ approval.approval_status }}</p>
     {% empty %}
         <p>No approvals yet.</p>
     {% endfor %}
