@@ -36,6 +36,35 @@ def officer_dashboard(request):
     # get all approvals for this officer
     approvals = ClearanceApproval.objects.filter(department=department)
 
+    # ✅ HANDLE FORM SUBMISSION
+    if request.method == 'POST':
+        approval_id = request.POST.get('approval_id')
+        status = request.POST.get('status')
+
+        approval = ClearanceApproval.objects.get(id=approval_id)
+
+        # SECURITY CHECK (VERY IMPORTANT)
+        if approval.department == department:
+            approval.approval_status = status
+            approval.approved_by = request.user
+            approval.save()
+        
+        # NEW LOGIC STARTS HERE
+        clearance_request = approval.request
+        approvals = clearance_request.clearanceapproval_set.all()
+
+        if approvals.filter(approval_status='Rejected').exists():
+            clearance_request.status = 'Rejected'
+        elif approvals.filter(approval_status='Pending').exists():
+            clearance_request.status = 'Pending'
+        else:
+            clearance_request.status = 'Approved'
+
+        clearance_request.save()
+        # NEW LOGIC ENDS HERE
+
+        return redirect('officer_dashboard')
+    
     return render(request, 'clearance/officer_dashboard.html', {
         'approvals': approvals,
     })

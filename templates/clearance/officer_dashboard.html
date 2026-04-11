@@ -1,13 +1,36 @@
-<h2>🏢 Officer Dashboard</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Officer Dashboard</title>
+</head>
+<body>
 
 <h3>Pending Clearance Requests</h3>
 
 {% for approval in approvals %}
-    <p>
-        {{ approval.request.student }} |
-        {{ approval.department.name }} →
-        {{ approval.approval_status }}
-    </p>
+    <form method="post">
+        {% csrf_token %}
+        
+        <p>
+            <strong>{{ approval.request.student }}</strong> |
+            {{ approval.department.name }}
+        </p>
+
+        <select name="status">
+            <option value="Pending" {% if approval.approval_status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="Approved" {% if approval.approval_status == "Approved" %}selected{% endif %}>Approved</option>
+            <option value="Rejected" {% if approval.approval_status == "Rejected" %}selected{% endif %}>Rejected</option>
+        </select>
+
+        <input type="hidden" name="approval_id" value="{{ approval.id }}">
+
+        <button type="submit">Update</button>
+    </form>
+
+    <hr>
+
 {% empty %}
     <p>No approvals found.</p>
 {% endfor %}
+</body>
+</html>
