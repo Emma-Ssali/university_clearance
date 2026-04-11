@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import ClearanceRequest, ClearanceApproval
 
 
 # Create your views here.
-@login_required
 def student_dashboard(request):
 
     # make sure that only students can access
@@ -22,5 +21,21 @@ def student_dashboard(request):
 
     return render(request, 'clearance/student_dashboard.html', {
         'requests': requests,
+        'approvals': approvals,
+    })
+
+def officer_dashboard(request):
+
+    # make sure that only officers can access
+    if not hasattr(request.user, 'managed_department'):
+        return render(request, 'error.html', {'message': 'Not an officer'})
+    
+    department = request.user.managed_department  # Assuming a OneToOne relationship between User and Officer
+   
+   
+    # get all approvals for this officer
+    approvals = ClearanceApproval.objects.filter(department=department)
+
+    return render(request, 'clearance/officer_dashboard.html', {
         'approvals': approvals,
     })

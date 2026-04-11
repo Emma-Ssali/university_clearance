@@ -1,0 +1,13 @@
+<h2>🏢 Officer Dashboard</h2>
+
+<h3>Pending Clearance Requests</h3>
+
+{% for approval in approvals %}
+    <p>
+        {{ approval.request.student }} |
+        {{ approval.department.name }} →
+        {{ approval.approval_status }}
+    </p>
+{% empty %}
+    <p>No approvals found.</p>
+{% endfor %}
